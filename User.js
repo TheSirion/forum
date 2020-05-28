@@ -1,5 +1,5 @@
 class User {
-  constructor(username, email, id, picture, auth_level = 1) {
+  constructor(username, email, id, picture, auth_level = 1, age, gender, country) {
     this.username = username;
     this.email = email;
     this.id = id;
@@ -7,6 +7,9 @@ class User {
     this.sign_up_date = new Date();
     this.auth_level = auth_level;
     this.bio = '';
+    this.age = age;
+    this.gender = gender;
+    this.country = country;
   }
 
   // the AuthLevel defines if the user is a normal forum member, a moderator or
@@ -36,14 +39,12 @@ class User {
 
 class Moderator extends User {
   constructor() {
-    super(username, email, id, picture, auth_level = 2);
-
+    super(username, email, id, picture, auth_level = 2, age, gender, country);
   }
 }
 
 class Administrator extends Moderator {
   constructor() {
-    super(username, email, id, picture, auth_level = 3);
-
+    super(username, email, id, picture, auth_level = 3, age, gender, country);
   }
 }
