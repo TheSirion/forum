@@ -39,12 +39,14 @@ class User {
 
 class Moderator extends User {
   constructor() {
-    super(username, email, id, picture, auth_level = 2, age, gender, country);
+    super();
+    this.auth_level = 2;
   }
 }
 
 class Administrator extends Moderator {
   constructor() {
-    super(username, email, id, picture, auth_level = 3, age, gender, country);
+    super();
+    this.auth_level = 3;
   }
 }
