@@ -10,14 +10,14 @@ import Footer from './components/footer/footer.component';
 
 function App() {
   return (
-    <Fragment>
+    <>
       <Header />
       <main className='main'>
         <h2 className='sub-title'>Sub-Forums</h2>
         <SubForumsList />
       </main>
       <Footer />
-    </Fragment>
+    </>
   );
 }
 
