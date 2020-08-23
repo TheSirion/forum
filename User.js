@@ -21,11 +21,19 @@ class User {
     }
   }
 
+  getAuthLevel() {
+    return this.auth_level;
+  }
+
   // a small text describing the user or having any text the user wants.
-  setbio(bio) {
+  setBio(bio) {
     if (bio.length <= 1000) {
       this.bio = bio;
     }
+  }
+
+  getBio() {
+    return this.bio;
   }
 
   // at first the picture will be whatever the API provides us,
@@ -35,6 +43,9 @@ class User {
     this.picture = picture;
   }
 
+  getProfilePicture() {
+    return this.picture;
+  }
 }
 
 class Moderator extends User {
@@ -49,4 +60,4 @@ class Administrator extends Moderator {
     super();
     this.auth_level = 3;
   }
-}
+} 
