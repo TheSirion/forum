@@ -59,4 +59,61 @@ export default class AuthController {
       }
     }
   }
+
+  async login (request: Request, response: Response) {
+    const { email, password } = request.body
+
+    const data = { email, password }
+
+    const schema = Yup.object().shape({
+      email: Yup.string().email().required(),
+      password: Yup.string().min(6).required()
+    })
+
+    await schema.validate(data, {
+      abortEarly: false
+    })
+
+    const query = 'SELECT user_id, password FROM users WHERE email = $1'
+    const values = [email]
+
+    try {
+      const { rows } = await database.query<{ user_id: number, password: string }>(query, values)
+
+      const { password, user_id } = rows[0]
+
+      if (await bcrypt.compare(data.password, password)) {
+        const token = jwt.sign({ id: [user_id] }, process.env.LOGIN_TOKEN_SECRET!, {
+          expiresIn: '15min'
+        })
+
+        const refreshToken = jwt.sign({ id: [user_id] }, process.env.REFRESH_TOKEN_SECRET!, {
+          expiresIn: '7d'
+        })
+
+        await database.query('UPDATE users SET refresh_token = $1 WHERE user_id = $2', [refreshToken, user_id])
+
+        response.setHeader('Set-Cookie', [`refreshToken=${refreshToken}; httpOnly;`])
+
+        return response.status(200).json(token)
+      } else {
+        const error = new Yup.ValidationError('Password', 'wrong pass', 'login')
+
+        error.inner = [new Yup.ValidationError('Password is incorrect', 'wrong pass', 'login')]
+
+        throw error
+      }
+    } finally {}
+  }
+
+  async logout (request: Request, response: Response) {
+    const refreshToken = request.headers.cookie?.replace('refreshToken=', '')
+
+    const query = 'UPDATE users SET refresh_token = $1 WHERE refresh_token = $2'
+    const values = [null, refreshToken]
+
+    await database.query(query, values)
+
+    return response.status(200).send()
+  }
 }
