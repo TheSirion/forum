@@ -34,11 +34,11 @@ export default class AuthController {
 
       const { user_id } = rows[0]
 
-      const token = jwt.sign({ id: [user_id] }, process.env.LOGIN_TOKEN_SECRET!, {
+      const token = jwt.sign({ id: user_id }, process.env.LOGIN_TOKEN_SECRET!, {
         expiresIn: '15min'
       })
 
-      const refreshToken = jwt.sign({ id: [user_id] }, process.env.REFRESH_TOKEN_SECRET!, {
+      const refreshToken = jwt.sign({ id: user_id }, process.env.REFRESH_TOKEN_SECRET!, {
         expiresIn: '7d'
       })
 
@@ -83,11 +83,11 @@ export default class AuthController {
       const { password, user_id } = rows[0]
 
       if (await bcrypt.compare(data.password, password)) {
-        const token = jwt.sign({ id: [user_id] }, process.env.LOGIN_TOKEN_SECRET!, {
+        const token = jwt.sign({ id: user_id }, process.env.LOGIN_TOKEN_SECRET!, {
           expiresIn: '15min'
         })
 
-        const refreshToken = jwt.sign({ id: [user_id] }, process.env.REFRESH_TOKEN_SECRET!, {
+        const refreshToken = jwt.sign({ id: user_id }, process.env.REFRESH_TOKEN_SECRET!, {
           expiresIn: '7d'
         })
 
