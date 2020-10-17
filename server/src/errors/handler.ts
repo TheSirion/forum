@@ -6,6 +6,8 @@ interface ValidationErrors {
 }
 
 const errorHandler: ErrorRequestHandler = (error, request, response, next) => {
+  console.log(`The error is ${error}`)
+
   if (error instanceof ValidationError) {
     const errors: ValidationErrors = {}
 
@@ -15,8 +17,6 @@ const errorHandler: ErrorRequestHandler = (error, request, response, next) => {
 
     return response.status(400).json({ message: 'Validation fails', errors })
   }
-
-  console.log('errorHandler', error)
 
   return response.status(500).json({ message: 'Internal server error' })
 }

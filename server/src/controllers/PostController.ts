@@ -13,6 +13,17 @@ export default class PostController {
     return response.status(200).json(rows)
   }
 
+  async show (request: Request, response: Response) {
+    const { id } = request.params
+
+    const query = 'SELECT * FROM posts WHERE post_id = $1'
+    const values = [id]
+
+    const { rows } = await database.query(query, values)
+
+    return response.status(200).json(rows)
+  }
+
   async create (request: Request, response: Response) {
     const { forum_id, title, content } = request.body
     const { user_id } = request
