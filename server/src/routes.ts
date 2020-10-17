@@ -10,12 +10,13 @@ const router = Router()
 const authController = new AuthController()
 const postController = new PostController()
 
-router.get('/login', authController.login)
+router.post('/login', authController.login)
 router.post('/register', authController.create)
 router.post('/logout', authController.logout)
 
 router.get('/posts', postController.index)
 router.get('/posts/:id', postController.show)
 router.post('/posts/create', checkUser, postController.create)
+router.delete('/posts/:id', checkUser, postController.destroy)
 
 export default router

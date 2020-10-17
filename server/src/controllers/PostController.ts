@@ -21,6 +21,12 @@ export default class PostController {
 
     const { rows } = await database.query(query, values)
 
+    if (rows.length === 0) {
+      throw Error('This post does not exist')
+    }
+
+    await database.query('INSERT INTO post_view (post_id) VALUES ($1)', [id])
+
     return response.status(200).json(rows)
   }
 
@@ -34,5 +40,21 @@ export default class PostController {
     await database.query(query, values)
 
     return response.status(201).send()
+  }
+
+  async destroy (request: Request, response: Response) {
+    const { id } = request.params
+    const { user_id } = request
+
+    const query = 'DELETE FROM posts WHERE user_id = $1 AND post_id = $2'
+    const values = [user_id, id]
+
+    const { rowCount } = await database.query(query, values)
+
+    if (rowCount === 0) {
+      throw Error('This post does not exist')
+    }
+
+    return response.status(204).send()
   }
 }
