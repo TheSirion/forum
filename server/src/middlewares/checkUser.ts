@@ -18,15 +18,17 @@ export default async function (request: Request, response: Response, next: NextF
           throw error
         }
 
-        const token = jwt.sign(decodedRefreshToken.id[0], process.env.REFRESH_TOKEN_SECRET!, {
+        const token = jwt.sign({ id: decodedRefreshToken.id }, process.env.LOGIN_TOKEN_SECRET!, {
           expiresIn: '15min'
         })
 
         return response.status(200).json(token)
       })
+    } else if (error) {
+      throw error
     } else {
       request.user_id = decodedToken?.id
-      next()
+      return next()
     }
   })
 }
