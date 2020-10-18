@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 
+import database from '../config/connection'
+
 export default async function (request: Request, response: Response, next: NextFunction) {
   const { authorization, cookie } = request.headers
 
@@ -27,8 +29,17 @@ export default async function (request: Request, response: Response, next: NextF
     } else if (error) {
       throw error
     } else {
-      request.user_id = decodedToken?.id
-      return next()
+      (async () => {
+        const { rows } = await database.query<{ role_id: number }>('SELECT * FROM user_role JOIN roles ON roles.role_id = user_role.role_id WHERE user_role.user_id = $1', [decodedToken?.id])
+
+        const { role_id } = rows[0]
+
+        request.user_id = decodedToken?.id
+
+        request.role = role_id
+
+        return next()
+      })()
     }
   })
 }

@@ -44,9 +44,11 @@ export default class AuthController {
 
       await database.query('UPDATE users SET refresh_token = $1 WHERE user_id = $2', [refreshToken, user_id])
 
+      await database.query('INSERT INTO user_role (user_id, role_id) VALUES($1, $2)', [user_id, 1])
+
       response.setHeader('Set-Cookie', [`refreshToken=${refreshToken}; httpOnly;`])
 
-      return response.status(201).json(token)
+      return response.status(201).json({ token, role: 1 })
     } catch (err) {
       if (/unique/.test(err)) {
         const error = new Yup.ValidationError('Unique', err, 'register')
@@ -74,13 +76,13 @@ export default class AuthController {
       abortEarly: false
     })
 
-    const query = 'SELECT user_id, password FROM users WHERE email = $1'
+    const query = 'SELECT * FROM users JOIN user_role ON user_role.user_id = users.user_id WHERE users.email = $1'
     const values = [email]
 
     try {
-      const { rows } = await database.query<{ user_id: number, password: string }>(query, values)
+      const { rows } = await database.query<{ user_id: number, password: string, role_id: number }>(query, values)
 
-      const { password, user_id } = rows[0]
+      const { password, user_id, role_id } = rows[0]
 
       if (await bcrypt.compare(data.password, password)) {
         const token = jwt.sign({ id: user_id }, process.env.LOGIN_TOKEN_SECRET!, {
@@ -95,7 +97,7 @@ export default class AuthController {
 
         response.setHeader('Set-Cookie', [`refreshToken=${refreshToken}; httpOnly;`])
 
-        return response.status(200).json(token)
+        return response.status(200).json({ token, role: role_id })
       } else {
         const error = new Yup.ValidationError('Password', 'wrong pass', 'login')
 
