@@ -22,6 +22,8 @@ router.post('/posts/create', checkUser, postController.create)
 router.get('/posts/:id', postController.show)
 router.delete('/posts/:id', checkUser, postController.destroy)
 
+router.get('/forums', forumController.index)
+router.get('/forum/:id', forumController.show)
 router.post('/forum/create', checkUser, forumController.create)
 
 export default router

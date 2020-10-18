@@ -31,15 +31,12 @@ CREATE TABLE IF NOT EXISTS user_role (
 
 CREATE TABLE IF NOT EXISTS forums (
 	forum_id serial primary key,
-  	forum_name varchar(255) not null,
-  	created_at timestamp default now()
-);
-
-
-CREATE TABLE IF NOT EXISTS forum_view (
-	forum_id int primary key,
-  	user_id int not null,
-  	foreign key (forum_id) references forums (forum_id) ON DELETE CASCADE
+  	forum_name varchar(255) unique not null,
+  	forum_creator_id int not null,
+  	forum_description text not null,
+  	created_at timestamp default now(),
+  
+  	foreign key (forum_creator_id) references users (user_id) ON DELETE CASCADE,
 );
 
 
