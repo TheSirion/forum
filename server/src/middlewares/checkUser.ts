@@ -5,7 +5,7 @@ export default async function (request: Request, response: Response, next: NextF
   const { authorization, cookie } = request.headers
 
   if (!authorization && !cookie) {
-    return response.status(401)
+    throw Error('User is not authorized')
   }
 
   const token = authorization?.replace('Bearer', '').trim()!

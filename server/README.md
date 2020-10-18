@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS posts (
 
 
 CREATE TABLE IF NOT EXISTS post_view (
-	post_id int primary key,
+	post_id int,
   	foreign key (post_id) references posts (post_id) ON DELETE CASCADE
 );
 
