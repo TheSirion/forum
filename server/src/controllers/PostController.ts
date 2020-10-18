@@ -30,6 +30,18 @@ export default class PostController {
     return response.status(200).json(rows)
   }
 
+  async trending (request: Request, response: Response) {
+    const query = 'SELECT * FROM posts INNER JOIN post_view ON post_view.post_id = posts.post_id GROUP BY posts.post_id, post_view.post_id ORDER BY COUNT(*) DESC LIMIT 5'
+
+    const { rows } = await database.query(query)
+
+    if (rows.length === 0) {
+      throw Error
+    }
+
+    return response.status(200).json(rows)
+  }
+
   async create (request: Request, response: Response) {
     const { forum_id, title, content } = request.body
     const { user_id } = request

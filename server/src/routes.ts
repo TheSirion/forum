@@ -15,8 +15,9 @@ router.post('/register', authController.create)
 router.post('/logout', authController.logout)
 
 router.get('/posts', postController.index)
-router.get('/posts/:id', postController.show)
+router.get('/posts/trending', postController.trending)
 router.post('/posts/create', checkUser, postController.create)
+router.get('/posts/:id', postController.show)
 router.delete('/posts/:id', checkUser, postController.destroy)
 
 export default router
