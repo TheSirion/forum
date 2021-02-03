@@ -107,7 +107,7 @@ export default class AuthController {
   }
 
   async logout (request: Request, response: Response) {
-    const refreshToken = request.headers.cookie?.replace('refreshToken=', '')
+    const refreshToken = request.headers.cookie.replace('refreshToken=', '')
 
     const query = 'UPDATE users SET refresh_token = $1 WHERE refresh_token = $2'
     const values = [null, refreshToken]
