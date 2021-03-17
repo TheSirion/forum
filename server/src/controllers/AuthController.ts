@@ -109,7 +109,7 @@ export default class AuthController {
   }
 
   async logout (request: Request, response: Response) {
-    const refreshToken = request.headers.cookie?.replace('refreshToken=', '')
+    const refreshToken = request.headers.cookie.replace('refreshToken=', '')
 
     if (!refreshToken) {
       throw Error('Not logged in')
